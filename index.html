@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel</title>
+</head>
+<body>
+    <h1>Hello World</h1>
+    <button id="powerOn">Power On</button>
+    <button id="powerOff">Power Off</button>
+    <div id="powerStateElement"></div> <!-- Container for the server response -->
+    <div id="timeElement"></div> <!-- Container for the server response -->
+
+    <script>
+        document.getElementById('powerOn').addEventListener('click', function() {
+            sendData('On');
+        });
+
+        document.getElementById('powerOff').addEventListener('click', function() {
+            sendData('Off');
+        });
+
+        function sendData(powerState) {
+            fetch('http://localhost:3000/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    powerState: powerState,
+                    secret: 'pizza'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('powerStateElement').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('powerStateElement').textContent = 'Error: ' + error;
+            });
+        }
+
+        // Update the date periodically
+        function greet() {
+            document.getElementById('timeElement').textContent = Date();
+        }
+
+        setInterval(greet, 1000);
+    </script>
+</body>
+</html>
